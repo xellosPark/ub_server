@@ -6,6 +6,8 @@ import { AuthController } from './auth.controller';
 import { Auth } from './auth.entity';
 import { AuthRepository } from './auth.repository';
 
+
+
 @Module({
   imports: [TypeOrmModule.forFeature([Auth])],
   controllers: [AuthController],
