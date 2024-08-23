@@ -54,46 +54,44 @@ export class AuthRepository {
   async signIn(createAuthDto: CreateAuthDto): Promise<{ accessToken: string; refreshToken: string }> {
     
     const { username, password } = createAuthDto;
-
     // 입력받은 사용자 이름과 비밀번호를 콘솔에 출력
     // console.log('signIn username0:', username);
     // console.log('signIn password0:', password);
 
     const user = await this.authRepository.findOne({ where: { username } });
-
     // 콘솔 로그 추가
     console.log('Attempting login for user:', username);
 
     if (user && (await bcrypt.compare(password, user.password))) {
-        // 유저 토큰 생성 ( Secret + Payload )
+      // 유저 토큰 생성 ( Secret + Payload )
 
-        //const Payload = { username };
-       // const accessToken = await this.jwtService.sign(Payload);
-
-        // 콘솔 로그 추가
-        //console.log('accessToken login for user:', accessToken);
-
-        //return { accessToken };
-        //return 'login success'
-
-        // 유저 토큰 생성 (Access Token과 Refresh Token)
-      const payload = { username: user.username, sub: user.id };
-      const accessToken  = this.jwtService.sign(payload, { expiresIn: '15m' }); // Access Token 생성 (15분 유효)
-      const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' }); // Refresh Token 생성 (7일 유효)
+      //const Payload = { username };
+      // const accessToken = await this.jwtService.sign(Payload);
 
       // 콘솔 로그 추가
-      console.log('Access Token:', accessToken);
+      //console.log('accessToken login for user:', accessToken);
+
+      //return { accessToken };
+      //return 'login success'
+
+      // 유저 토큰 생성 (Access Token과 Refresh Token)
+      const payload = { username: user.username, sub: user.id };
+      const accessToken  = this.jwtService.sign(payload, { expiresIn: '2m'  }); // Access Token 생성 (2분 유효)
+      const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d'  }); // Refresh Token 생성 (7일 유효)
+
+      // 콘솔 로그 추가
+      console.log('Access  Token:', accessToken);
       console.log('Refresh Token:', refreshToken);
 
       return {
         accessToken: accessToken,
         refreshToken: refreshToken,
       };
+
     } else {
         throw new UnauthorizedException('Login failed');
     }
   }
-
 
   // 모든 사용자 가져오기 메서드
   async findAllUsers(): Promise<Auth[]> {
@@ -111,23 +109,23 @@ export class AuthRepository {
   }
 
   // 리프레시 토큰으로 액세스 토큰 재발급
-  // async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-  //   try {
-  //     const payload = this.jwtService.verify(refreshToken, { secret: 'RefreshSecretKey' }); // 리프레시 토큰 검증
-  //     const user = await this.authRepository.findOne({ where: { username: payload.username } });
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+    try {
+      const payload = this.jwtService.verify(refreshToken, { secret: 'RefreshSecretKey' }); // 리프레시 토큰 검증
+      const user = await this.authRepository.findOne({ where: { username: payload.username } });
 
-  //     if (!user) {
-  //       throw new UnauthorizedException('Invalid refresh token');
-  //     }
+      if (!user) {
+        throw new UnauthorizedException('Invalid refresh token');
+      }
 
-  //     const newAccessToken = this.jwtService.sign(
-  //       { username: user.username, sub: user.id },
-  //       { secret: 'Secret1234', expiresIn: '15m' }, // 새로운 액세스 토큰 발급
-  //     );
+      const newAccessToken = this.jwtService.sign(
+        { username: user.username, sub: user.id },
+        { secret: 'Secret1234', expiresIn: '2m' }, // 새로운 액세스 토큰 발급
+      );
 
-  //     return { accessToken: newAccessToken };
-  //   } catch (error) {
-  //     throw new UnauthorizedException('Invalid refresh token');
-  //   }
-  // }
+      return { accessToken: newAccessToken };
+    } catch (error) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+  }
 }

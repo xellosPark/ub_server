@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthRepository } from './auth.repository';
 import { Auth } from './auth.entity';
 import { CreateAuthDto } from './dto/create-auth.dto';
-import { JwtService } from '@nestjs/jwt';
+
 
 @Injectable()
 export class AuthService {
@@ -37,7 +37,7 @@ export class AuthService {
   }
 
   // 리프레시 토큰으로 액세스 토큰 재발급
-  // async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-  //   return this.authRepository.refreshToken();
-  // }
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+     return this.authRepository.refreshToken();
+  }
 }

@@ -8,7 +8,7 @@ import { AuthGuard } from '@nestjs/passport';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/signup')
+  @Post('signup')
   async createUser(@Body(ValidationPipe) createAuthDto: CreateAuthDto): Promise<void> {
     // console.log('Received createUser request with data:', createAuthDto);
   
@@ -19,18 +19,19 @@ export class AuthController {
     return this.authService.createUser(createAuthDto);
   }
 
-  @Post('/signin')
+  @Post('signin')
   async signIn(@Body() createAuthDto: CreateAuthDto): Promise<{ accessToken: string; refreshToken: string }> {
       return this.authService.signIn(createAuthDto);
   }
 
-    // 여기에 refresh-token 엔드포인트를 추가
-  // @Post('refresh-token')
-  // async refreshToken(@Body('refreshToken') refreshToken: string): Promise<{ accessToken: string }> {
-  //   return this.authService.refreshToken(refreshToken);
-  // }
+  // 여기에 refresh-token 엔드포인트를 추가
+  @Post('refresh-token')
+  async refreshToken(@Body('refreshToken') refreshToken: string): Promise<{ accessToken: string }> {
+     return this.authService.refreshToken(refreshToken);
+  }
 
   @Get()
+  @UseGuards(AuthGuard('jwt')) // 여기에 'jwt' Passport 전략을 사용하여 토큰이 있는지 확인합니다.
   async findAllUsers(): Promise<Auth[]> {
     return this.authService.findAllUsers();
   }
@@ -54,7 +55,7 @@ export class AuthController {
   @Post('/test')
   @UseGuards(AuthGuard()) // 'jwt'는 Passport 전략의 이름을 나타냅니다.
   test(@Req() req) {
-      console.log('req', req); // 인증된 사용자의 정보를 출력
-  //    console.log('req', req.user); // 인증된 사용자의 정보를 출력
+      //console.log('req', req); // 인증된 사용자의 정보를 출력
+      console.log('req', req.user); // 인증된 사용자의 정보를 출력
   }
 }

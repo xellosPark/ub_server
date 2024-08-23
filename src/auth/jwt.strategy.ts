@@ -39,7 +39,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {   //Strategy passp
       // 사용자가 없으면 UnauthorizedException 예외 발생
       throw new UnauthorizedException('사용자를 찾을 수 없습니다.');
     }
-
     // 사용자 객체를 요청 객체에 첨부
     return user;
   }
