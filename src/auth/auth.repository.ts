@@ -77,7 +77,7 @@ export class AuthRepository {
       // 유저 토큰 생성 (Access Token과 Refresh Token)
       const payload = { username: user.username, sub: user.id };
       const accessToken  = this.jwtService.sign(payload, { expiresIn: '2m'  }); // Access Token 생성 (2분 유효)
-      const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d'  }); // Refresh Token 생성 (7일 유효)
+      const refreshToken = this.jwtService.sign(payload, { expiresIn: '3h'  }); // Refresh Token 생성 (3시간 유효)
 
       // 콘솔 로그 추가
       console.log('Access  Token:', accessToken);
@@ -111,13 +111,21 @@ export class AuthRepository {
   // 리프레시 토큰으로 액세스 토큰 재발급
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     try {
-      const payload = this.jwtService.verify(refreshToken, { secret: 'RefreshSecretKey' }); // 리프레시 토큰 검증
+      // 리프레시 토큰 검증
+      console.log('Verifying Refresh Token:', refreshToken);
+      const payload = this.jwtService.verify(refreshToken, { secret: 'Secret1234' }); // 리프레시 토큰 검증
+      console.log('Verified Payload:', payload);
+
+      // 사용자 조회
       const user = await this.authRepository.findOne({ where: { username: payload.username } });
+      console.log('Found User:', user);
 
       if (!user) {
+        console.log('User not found, throwing UnauthorizedException');
         throw new UnauthorizedException('Invalid refresh token');
       }
 
+       // 새로운 액세스 토큰 발급
       const newAccessToken = this.jwtService.sign(
         { username: user.username, sub: user.id },
         { secret: 'Secret1234', expiresIn: '2m' }, // 새로운 액세스 토큰 발급
@@ -125,6 +133,8 @@ export class AuthRepository {
 
       return { accessToken: newAccessToken };
     } catch (error) {
+      // 검증 실패 시 로그와 예외 처리
+      console.log('Failed to verify refresh token:', error.message);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }

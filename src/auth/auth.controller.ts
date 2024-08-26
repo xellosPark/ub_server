@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Param, Body, Req, Delete, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Param, Body, Req, Delete, ValidationPipe, UseGuards, Headers, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Auth } from './auth.entity';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -25,9 +25,32 @@ export class AuthController {
   }
 
   // 여기에 refresh-token 엔드포인트를 추가
+  // @Post('refresh-token')
+  // async refreshToken(@Body('refreshToken') refreshToken: string): Promise<{ accessToken: string }> {
+  //    console.log('Received refreshToken:', refreshToken); // 콘솔 로그 추가
+  //    return this.authService.refreshToken(refreshToken);
+  // }
+
   @Post('refresh-token')
-  async refreshToken(@Body('refreshToken') refreshToken: string): Promise<{ accessToken: string }> {
-     return this.authService.refreshToken(refreshToken);
+  async refreshToken(@Headers('authorization') authHeader: string): Promise<{ accessToken: string }> {
+  // 1. Authorization 헤더가 있는지 확인
+    console.log('헤더가 있는지 확인:', authHeader);
+      if (!authHeader) {
+      throw new BadRequestException('Authorization header is missing');
+    }
+
+    // 2. Bearer 토큰 형식이 맞는지 확인
+    if (!authHeader.startsWith('Bearer ')) {
+      console.log('Invalid Authorization Header Format:', authHeader);
+      throw new BadRequestException('Invalid authorization header format');
+    }
+
+  // 3. Bearer 문자열을 제거하고 JWT만 추출
+    const refreshToken = authHeader.replace('Bearer ', '').trim();
+    console.log('Extracted JWT (refreshToken):', refreshToken);
+
+  // 4. JWT를 사용해 새로운 액세스 토큰을 발급
+    return this.authService.refreshToken(refreshToken);
   }
 
   @Get()

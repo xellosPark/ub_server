@@ -38,6 +38,6 @@ export class AuthService {
 
   // 리프레시 토큰으로 액세스 토큰 재발급
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
-     return this.authRepository.refreshToken();
+    return this.authRepository.refreshToken(refreshToken);
   }
 }
