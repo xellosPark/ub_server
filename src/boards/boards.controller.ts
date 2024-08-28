@@ -1,13 +1,17 @@
 // src/boards/boards.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { AuthGuard } from '@nestjs/passport';
+
+//import { v1 as uuid } from 'uuid';
 
 @Controller('boards')
+@UseGuards(AuthGuard()) //미들웨어 작동
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
-  @Get()
+  @Get('/')
   async findAllBoards() {
     return this.boardsService.findAllBoards();
   }
@@ -24,14 +28,27 @@ export class BoardsController {
   // 데 도움을 줍니다.
   @UsePipes(ValidationPipe) // 유효성 검사 파이프 추가
   async createBoard(@Body() createBoardDto: CreateBoardDto) {
-    const { title, description, isPublic } = createBoardDto;
-    return this.boardsService.createBoard(title, description, isPublic);
+    //const { title, description, isPublic } = createBoardDto;
+
+    // 게시물 ID를 위한 유니크한 UUID(버전 1) 생성
+    //게시물 ID는 어떻게 처리하나요?
+    //ID는 모든 게시물에 유니크 해야합니다. 그래서 만약 데이터베이스에 데이터를 넣어줄 때는 데이터베이스가 알아서 유니크한 값을 줍니다.
+    //하지만 현재는 데이터베이스를 안쓰기 때문에 임의로 유니크한 값을 줘야합니다. 
+    //이 때 여러 방법을 쓸 수 있지만 uuid 모듈을 이용해서 유니크한 값을 주겠습니다.
+    //uuid 모듈 사용하기 위해서 
+    //npm install uuid --save 를 이용해서 설치해줍니다.
+    //그 후에 uuid 모듈을 사용하기 원하는 곳에서 import 해줍니다.
+    //const id = uuid();
+
+    //return this.boardsService.createBoard(title, description, isPublic);
+    return this.boardsService.createBoard(createBoardDto);
+
   }
 
   @Patch(':id')
   async updateBoard(@Param('id') id: number, @Body() createBoardDto: CreateBoardDto) {
-    const { title, description, isPublic } = createBoardDto;
-    return this.boardsService.updateBoard(id, title, description, isPublic);
+    //const { title, description, isPublic } = createBoardDto;
+    return this.boardsService.updateBoard(id, createBoardDto);
   }
 
   @Delete(':id')

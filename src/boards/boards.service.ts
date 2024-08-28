@@ -2,6 +2,7 @@
 import { Injectable } from '@nestjs/common';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
+import { CreateBoardDto } from './dto/create-board.dto';
 
 @Injectable()
 export class BoardsService {
@@ -18,13 +19,13 @@ export class BoardsService {
   }
 
   // 새로운 게시판을 생성하는 서비스 메서드
-  async createBoard(title: string, description: string, isPublic: boolean): Promise<Board> {
-    return this.boardRepository.createBoard(title, description, isPublic);
+  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto);
   }
 
   // 게시판을 업데이트하는 서비스 메서드
-  async updateBoard(id: number, title: string, description: string, isPublic: boolean): Promise<Board> {
-    return this.boardRepository.updateBoard(id, title, description, isPublic);
+  async updateBoard(id: number, createBoardDto: CreateBoardDto): Promise<Board> {
+    return this.boardRepository.updateBoard(id, createBoardDto);
   }
 
   // 게시판을 삭제하는 서비스 메서드
