@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { Auth } from 'src/auth/auth.entity';
 
 @Injectable()
 export class BoardsService {
@@ -19,8 +20,8 @@ export class BoardsService {
   }
 
   // 새로운 게시판을 생성하는 서비스 메서드
-  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
-    return this.boardRepository.createBoard(createBoardDto);
+  async createBoard(createBoardDto: CreateBoardDto, auth:Auth): Promise<Board> {
+    return this.boardRepository.createBoard(createBoardDto,auth);
   }
 
   // 게시판을 업데이트하는 서비스 메서드

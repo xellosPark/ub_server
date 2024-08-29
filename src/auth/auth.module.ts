@@ -16,7 +16,7 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.register({
       secret: 'Secret1234', // JWT 서명에 사용될 비밀 키 (환경 변수로 설정 권장)
       signOptions: {
-        expiresIn: '2m', // Access Token 유효 기간 설정 (짧은 시간)
+        expiresIn: '1h', // Access Token 유효 기간 설정 (짧은 시간)2m 2분 1h 1시간
       },
     }),
   ],

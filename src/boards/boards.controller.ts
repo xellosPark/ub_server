@@ -1,9 +1,11 @@
 // src/boards/boards.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe,UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { AuthGuard } from '@nestjs/passport';
-
+import { GetUser } from 'src/auth/get-user.decorator';
+import { Auth } from 'src/auth/auth.entity';
+import { Board } from './board.entity';
 //import { v1 as uuid } from 'uuid';
 
 @Controller('boards')
@@ -16,6 +18,14 @@ export class BoardsController {
     return this.boardsService.findAllBoards();
   }
 
+  // @Get('/')
+  // async findAllBoards(@Query('id') id?: number) {
+  //   if (id) {
+  //     return this.boardsService.findBoardById(id);
+  //   }
+  //   return this.boardsService.findAllBoards();
+  // }
+
   @Get(':id')
   async findBoardById(@Param('id') id: number) {
     return this.boardsService.findBoardById(id);
@@ -27,7 +37,8 @@ export class BoardsController {
   // 클래스와 함께 사용되어, 클라이언트에서 전송된 데이터가 예상한 형식과 규칙을 따르는지 검증하는
   // 데 도움을 줍니다.
   @UsePipes(ValidationPipe) // 유효성 검사 파이프 추가
-  async createBoard(@Body() createBoardDto: CreateBoardDto) {
+  async createBoard(@Body() createBoardDto: CreateBoardDto,
+  @GetUser() auth:Auth): Promise <Board> {
     //const { title, description, isPublic } = createBoardDto;
 
     // 게시물 ID를 위한 유니크한 UUID(버전 1) 생성
@@ -41,7 +52,7 @@ export class BoardsController {
     //const id = uuid();
 
     //return this.boardsService.createBoard(title, description, isPublic);
-    return this.boardsService.createBoard(createBoardDto);
+    return this.boardsService.createBoard(createBoardDto, auth);
 
   }
 

@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { Board } from './board.entity';
 import { CreateBoardDto } from './dto/create-board.dto';
+import { Auth } from 'src/auth/auth.entity';
 
 @Injectable()
 export class BoardRepository {
@@ -13,7 +14,7 @@ export class BoardRepository {
   }
 
   // 게시판을 생성하는 메서드
-  async createBoard(createBoardDto: CreateBoardDto): Promise<Board> {
+  async createBoard(createBoardDto: CreateBoardDto, auth:Auth): Promise<Board> {
     // DB 사용 안할경우에는 ID는 어떻게 처리 -> uuid 모듈 사용 id: uuid() import { v1 as uuid } from 'uuid'
     // const board = this.boardRepository.create({I, title, description, isPublic }); 
     const { title, description, isPublic } = createBoardDto;
@@ -22,6 +23,7 @@ export class BoardRepository {
     console.log('Title:', title);
     console.log('Description:', description);
     console.log('Public:', isPublic);
+    console.log('User:', auth);
 
     const board = this.boardRepository.create({ title, description, isPublic });
     await this.boardRepository.save(board);
@@ -31,6 +33,7 @@ export class BoardRepository {
   // 모든 게시판을 가져오는 메서드
   //http://localhost:4050/boards/
   async findAllBoards(): Promise<Board[]> {
+    console.log('<- 여기 ->');
     return this.boardRepository.find();
   }
 
@@ -39,6 +42,7 @@ export class BoardRepository {
   async findOneBoard(id: number): Promise<Board> {
     console.log(`Finding board with id: ${id}`); // 전달된 ID 값 로깅
     const board = await this.boardRepository.findOneBy({ id });
+    
     if (!board) {
       throw new NotFoundException(`Board with ID ${id} not found`);
     }
