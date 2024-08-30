@@ -9,14 +9,24 @@ import { Auth } from 'src/auth/auth.entity';
 export class BoardsService {
   constructor(private readonly boardRepository: BoardRepository) {}
 
-  // 모든 게시판을 가져오는 서비스 메서드
+  // // 모든 게시판을 가져오는 서비스 메서드
   async findAllBoards(): Promise<Board[]> {
     return this.boardRepository.findAllBoards();
+  }
+
+  // 모든 게시판을 가져오는 이후에 해당 아이디만 가져오기
+  async findAllBoardsID(auth:Auth): Promise<Board[]> {
+    return this.boardRepository.findAllBoardsID(auth);
   }
 
   // ID로 특정 게시판을 찾는 서비스 메서드
   async findBoardById(id: number): Promise<Board> {
     return this.boardRepository.findOneBoard(id);
+  }
+
+  // ID로 특정 모든데이터 가져오기
+  async findBoardByIdAll(id: number): Promise<Board[]> {
+    return this.boardRepository.findOneBoardAll(id);
   }
 
   // 새로운 게시판을 생성하는 서비스 메서드

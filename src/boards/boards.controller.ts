@@ -13,10 +13,17 @@ import { Board } from './board.entity';
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
+  // 전체 받아 오기
   @Get('/')
   async findAllBoards() {
     return this.boardsService.findAllBoards();
   }
+  
+  // query auth id 이용하여 받아오는 방식
+  // @Get('/')
+  // async findAllBoardsID(@GetUser() auth:Auth) {
+  //   return this.boardsService.findAllBoardsID(auth);
+  // }
 
   // @Get('/')
   // async findAllBoards(@Query('id') id?: number) {
@@ -26,9 +33,14 @@ export class BoardsController {
   //   return this.boardsService.findAllBoards();
   // }
 
-  @Get(':id')
-  async findBoardById(@Param('id') id: number) {
-    return this.boardsService.findBoardById(id);
+  // @Get(':id')
+  // async findBoardById(@Param('id') id: number) {
+  //   return this.boardsService.findBoardById(id);
+  // }
+
+  @Get('/:id')
+  async findBoardByIdAll(@Param('id') id: number) {
+    return this.boardsService.findBoardByIdAll(id);
   }
 
   @Post()

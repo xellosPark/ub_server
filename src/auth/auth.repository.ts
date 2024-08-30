@@ -76,8 +76,8 @@ export class AuthRepository {
 
       // 유저 토큰 생성 (Access Token과 Refresh Token)
       const payload = { username: user.username, sub: user.id };
-      const accessToken  = this.jwtService.sign(payload, { expiresIn: '2m'  }); // Access Token 생성 (2분 유효)
-      const refreshToken = this.jwtService.sign(payload, { expiresIn: '5m'  }); // Refresh Token 생성 (3시간 유효)
+      const accessToken  = this.jwtService.sign(payload, { expiresIn: '1h'  }); // Access Token 생성 (2분 유효)
+      const refreshToken = this.jwtService.sign(payload, { expiresIn: '8h'  }); // Refresh Token 생성 (3시간 유효)
 
       // 콘솔 로그 추가
       console.log('Access  Token:', accessToken);

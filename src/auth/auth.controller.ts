@@ -13,9 +13,9 @@ export class AuthController {
   async createUser(@Body(ValidationPipe) createAuthDto: CreateAuthDto): Promise<void> {
     // console.log('Received createUser request with data:', createAuthDto);
   
-    // const { username, password } = createAuthDto;
-    // console.log('Extracted username:', username);
-    // console.log('Extracted password:', password);
+    const { username, password } = createAuthDto;
+    console.log('Extracted username:', username);
+    console.log('Extracted password:', password);
     
     return this.authService.createUser(createAuthDto);
   }
