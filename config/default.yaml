@@ -1,0 +1,12 @@
+server:
+  port: 4050
+
+
+db:
+  type: 'mysql'
+  port: 3306
+  database: 'admin_board'
+
+
+jwt:
+  expiresIn: 3600
