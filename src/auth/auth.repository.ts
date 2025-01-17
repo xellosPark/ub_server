@@ -1,12 +1,13 @@
 // src/auth/auth.repository.ts
 import { ConflictException, Injectable, InternalServerErrorException, UnauthorizedException } from '@nestjs/common';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, EntityRepository, Repository } from 'typeorm';
 import { Auth } from './auth.entity';
 import { CreateAuthDto } from './dto/create-auth.dto';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
+// @EntityRepository(User) 예제 버전
 export class AuthRepository {
   private authRepository: Repository<Auth>;
 

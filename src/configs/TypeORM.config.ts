@@ -11,7 +11,7 @@ export const typeORMConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.{js,ts}'],  // 엔티티 경로
   synchronize: true,        // 애플리케이션 시작 시 스키마 동기화 여부
   autoLoadEntities: true,
-  logging: true,
+  logging: false,
 };
 
 

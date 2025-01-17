@@ -6,6 +6,7 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { Auth } from 'src/auth/auth.entity';
 
 @Injectable()
+
 export class BoardsService {
   constructor(private readonly boardRepository: BoardRepository) {}
 
@@ -43,4 +44,10 @@ export class BoardsService {
   async deleteBoard(id: number): Promise<void> {
     await this.boardRepository.deleteBoard(id);
   }
+
+  // 해당 유저에게 게시판을 삭제하는 서비스 메서드
+  async deleteBoardtoAuth(id: number, auth:Auth): Promise<void> {
+    await this.boardRepository.deleteBoardtoAuth(id,auth);
+  }
+
 }

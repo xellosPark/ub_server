@@ -1,5 +1,5 @@
 // src/boards/boards.controller.ts
-import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe,UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ParseIntPipe, ValidationPipe,UseGuards } from '@nestjs/common';
 import { BoardsService } from './boards.service';
 import { CreateBoardDto } from './dto/create-board.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -68,14 +68,30 @@ export class BoardsController {
 
   }
 
-  @Patch(':id')
+  @Patch('/:id')
   async updateBoard(@Param('id') id: number, @Body() createBoardDto: CreateBoardDto) {
     //const { title, description, isPublic } = createBoardDto;
     return this.boardsService.updateBoard(id, createBoardDto);
   }
 
-  @Delete(':id')
-  async deleteBoard(@Param('id') id: number) {
-    return this.boardsService.deleteBoard(id);
+  // CURD -> D 부분 Delete
+  // @Param('id', ParseIntPipe) 데코레이터를 사용하여 id 파라미터에 ParseIntPipe 파이프를 바인딩합니다.
+  // 이렇게 하면 id 파라미터가 정수로 변환되어 라우트 핸들러에 전달됩니다.
+  // id 이용하여 삭제 하는 방법
+  // @Delete('/:id')
+  // async deleteBoard(@Param('id', ParseIntPipe) id: number) {
+  //   return this.boardsService.deleteBoard(id);
+  // }
+
+  // 해당 유저에게 게시판을 삭제하는 서비스 메서드
+  @Delete('/:id')
+  deleteBoard(@Param('id', ParseIntPipe) id: number, @GetUser() auth:Auth)
+  : Promise <void> {
+    //console.log('deleteBoard method called');
+    console.log('Received id:', id);
+    //console.log('Authenticated user:', auth);
+
+    return this.boardsService.deleteBoardtoAuth(id, auth);
   }
+
 }

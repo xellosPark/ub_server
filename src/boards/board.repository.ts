@@ -100,4 +100,14 @@ export class BoardRepository {
       throw new NotFoundException(`Board with ID ${id} not found`);
     }
   }
+
+  // 해당 유저에게 게시판을 삭제하는 서비스 메서드
+  async deleteBoardtoAuth(id: number, auth:Auth): Promise<void> {
+    const result = await this.boardRepository.delete({id, auth});
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Board with ID ${id} not found`);
+    }
+
+  }
 }
