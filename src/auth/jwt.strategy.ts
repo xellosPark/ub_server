@@ -13,6 +13,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Auth } from './auth.entity'
 import { Repository } from 'typeorm';
+import * as config from 'config';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {   //Strategy passport-jwt 사용하기 위해 jwt 전력 사용해서 사용
@@ -25,7 +26,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {   //Strategy passp
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Authorization Bearer Token 헤더에서 JWT 추출 (어디서 가져올지)
       //ignoreExpiration: false, // 토큰의 유효기간을 무시하지 않음
-      secretOrKey: 'Secret1234', // JWT 서명 비밀 키 (auth.module.ts와 일치해야 함)
+      //secretOrKey: 'Secret1234', // JWT 서명 비밀 키 (auth.module.ts와 일치해야 함)
+      secretOrKey: process.env.JWT_SECRET || config.get('jwt.secret')
     });
   }
 

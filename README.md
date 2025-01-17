@@ -76,3 +76,47 @@ passport-local 전략은 사용자 이름과 비밀번호를 기반으로 사용
 
 각각의 미들웨어가 불러지는(called) 순서
 middleware -> guard -> interceptor (before) -> pipe -> controller -> service -> controller -> interceptor (after) -> filter (if applicable) -> client
+
+설정하기 위해서 필요한 모듈
+
+원도우에서는 win-node-env를 설치해야 한다.
+(왜냐면 원도우에서는 기본적으로 환경변수를 지원하지 않기 때문입니다.)
+
+npm install -g win-node-env
+
+그리고 원도우와 맥 모두에서는 config라는 모듈을 설치받아야 한다.
+
+npm install config --save
+
+
+구성
+구성은 세 가지 YAML 파일로 나뉩니다.
+Config
+
+1. default.yml
+기본 설정 (기본 환경 설정이나 운영 환경 설정에도 적용됨)
+server:
+  port: 3000
+db:
+  type: 'mysql'
+  port: 5432
+  database: 'boardproject'
+jwt:
+  expiresIn: 3600
+
+2. development.yml은 default.yml을 확장하고 다음을 추가합니다.
+db:
+  host: 'localhost'
+  username: 'postgres'
+  password: 'postgres'
+  synchronize: true
+jwt:
+  secret: 'secret'
+
+3. production.yml은 default.yml을 확장하고 다음을 추가합니다.
+db:
+  synchronize: false
+yml 파일은 띄어 쓰기가 매우 중요한다.
+
+synchronize: true는 무엇을 합니까?
+TypeORM 구성에서 'synchronize: true'를 설정하면 TypeORM은 애플리케이션이 실행될 때마다 데이터베이스 스키마를 엔터티 정의와 자동으로 동기화하도록 지시합니다. 이는 TypeORM이 코드에 정의한 엔터티 클래스와 일치하도록 데이터베이스 테이블과 열을 자동으로 생성, 업데이트 또는 삭제한다는 것을 의미합니다.
